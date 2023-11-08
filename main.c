@@ -4,6 +4,7 @@ int main()
 {
     int is_child = 1, single = 0, series = 0, month = 1;
     double price, output, input = 170.33;
+    double currencySteps[] = { 500.0, 200.0, 100.0, 50.0, 20.0, 10.0, 5.0, 2.0, 1.0, 0.5, 0.2, 0.1, 0.05, 0.02, 0.01 };
 
     if(series){
         if(is_child){
@@ -45,55 +46,42 @@ int main()
         }
 
         if(output != 0.0){
-            printf("Ihr Rueckgeld betraegt %.2lf und wird in folgender Konstellation ausgegeben: ", output);
+            printf("Ihr Rueckgeld betraegt %.2lf und wird in folgender Konstellation ausgegeben:\n", output);
 
-            while(output > 0.001){
-                // output != 0.0 funktioniert nicht, aufgrund der rundungsfehler.
-                if(output >= 500.0){
-                    printf("500 Euro Schein, ");
-                    output = output - 500.0;
-                } else if(output >= 200.0){
-                    printf("200 Euro Schein, ");
-                    output = output - 200.0;
-                } else if(output >= 100.0){
-                    printf("100 Euro Schein, ");
-                    output = output - 100.0;
-                } else if(output >= 50.0){
-                    printf("50 Euro Schein, ");
-                    output = output - 50.0;
-                } else if(output >= 20.0){
-                    printf("20 Euro Schein, ");
-                    output = output - 20.0;
-                } else if(output >= 10.0){
-                    printf("10 Euro Schein, ");
-                    output = output - 10.0;
-                } else if(output >= 5.0){
-                    printf("5 Euro Schein, ");
-                    output = output - 5.0;
-                } else if(output >= 2.0){
-                    printf("2 Euro Muenze, ");
-                    output = output - 2.0;
-                } else if(output >= 1.0){
-                    printf("1 Euro Muenze, ");
-                    output = output - 1.0;
-                } else if(output >= 0.5){
-                    printf("50ct Muenze, ");
-                    output = output - 0.5;
-                } else if(output >= 0.2){
-                    printf("20ct Muenze, ");
-                    output = output - 0.2;
-                } else if(output >= 0.1){
-                    printf("10ct Muenze, ");
-                    output = output - 0.1;
-                } else if(output >= 0.05){
-                    printf("5ct Muenze, ");
-                    output = output - 0.05;
-                } else if(output >= 0.02){
-                    printf("2ct Muenze, ");
-                    output = output - 0.02;
-                } else if(output >= 0.01){
-                    printf("1ct Muenze, ");
-                    output = output - 0.01;
+            int currencyItemsAmount = sizeof(currencySteps)/sizeof(currencySteps[0]);
+
+            for(int i = 0; i < currencyItemsAmount; i++){
+                int count = 0;
+
+                while(output >= currencySteps[i]){
+                    count++;
+                    output = output - currencySteps[i];
+                }
+
+                if(count != 0){
+                    if(currencySteps[i] < 1.0){
+                        printf("%i %.0lf ", count, currencySteps[i] * 100.0);
+                        printf("Cent ");
+                    } else {
+                        printf("%i %.2lf ", count, currencySteps[i]);
+                        printf("Euro ");
+                    }
+
+                    if(currencySteps[i] < 5.0){
+                        if(count > 1){
+                            printf("Muenzen");
+                        } else {
+                            printf("Muenze");
+                        }
+                    } else {
+                        if(count > 1){
+                            printf("Scheine");
+                        } else {
+                            printf("Schein");
+                        }
+                    }
+
+                    printf("\n");
                 }
             }
         }
@@ -101,6 +89,7 @@ int main()
 
 
 
+    printf("\n\n");
 
     return 0;
 }
