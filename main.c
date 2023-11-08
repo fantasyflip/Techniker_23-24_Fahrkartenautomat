@@ -1,28 +1,28 @@
 #include <stdio.h>
+#include <math.h>
 
 int main()
 {
     int is_child = 1, single = 0, series = 0, month = 1;
-    double price, output, input = 160.23;
-    double currencySteps[] = { 500.0, 200.0, 100.0, 50.0, 20.0, 10.0, 5.0, 2.0, 1.0, 0.5, 0.2, 0.1, 0.05, 0.02, 0.01 };
+    double price, output, input = 123.45;
 
     if(series){
         if(is_child){
-            price = 4.5;
+            price = 4.50;
         } else {
-            price = 6.5;
+            price = 6.50;
         }
     } else if(month) {
         if(is_child){
-            price = 25.5;
+            price = 25.50;
         } else {
-            price = 30.0;
+            price = 30.00;
         }
     } else if (single){
         if(is_child){
-            price = 2.5;
+            price = 2.50;
         } else {
-            price = 3.5;
+            price = 3.50;
         }
     }
 
@@ -54,26 +54,38 @@ int main()
         if(output != 0.0){
             printf("Ihr Rueckgeld betraegt %.2lf Euro und wird in folgender Konstellation ausgegeben:\n\n", output);
 
+            double currencySteps[] = { 500.00, 200.00, 100.00, 50.00, 20.00, 10.00, 5.00, 2.00, 1.00, 0.50, 0.20, 0.10, 0.05, 0.02, 0.01 };
             int currencyItemsAmount = sizeof(currencySteps)/sizeof(currencySteps[0]);
+
+            // output zu int in cent casten
+            int centOutput = (int)(output * 100);
+
+            // ---- CAST IST NOTWENDIG UM RUNDUNGSFEHLER BEI DOUBLE ZU UMGEHEN ----
+            // ---- Bsp: 134.72 - 100.0 = 34.7199999                           ----
+            // ----      -> Würde einen Cent unterschlagen.                    ----
+            // ----      -> Int hat dieses Problem nicht -> Euro in Cent       ----
 
             for(int i = 0; i < currencyItemsAmount; i++){
                 int count = 0;
+                int stepCents = (int)(currencySteps[i] * 100);
 
-                while(output >= currencySteps[i]){
+                while(centOutput >= stepCents){
                     count++;
-                    output = output - currencySteps[i];
+                    centOutput = centOutput - stepCents;
                 }
 
                 if(count != 0){
-                    if(currencySteps[i] < 1.0){
-                        printf("%i %.0lf ", count, currencySteps[i] * 100.0);
+                    if(stepCents < 100){
+
+                        printf("%i %i ", count, stepCents);
                         printf("Cent ");
                     } else {
-                        printf("%i %.2lf ", count, currencySteps[i]);
+                        // cent zurück zu double in euro casten
+                        printf("%i %.2lf ", count, (double)(stepCents / 100));
                         printf("Euro ");
                     }
 
-                    if(currencySteps[i] < 5.0){
+                    if(stepCents < 500){
                         if(count > 1){
                             printf("Muenzen");
                         } else {
